@@ -6,9 +6,9 @@ The focus is on designing, documenting and implementing practical solutions usin
 
 ## Topics
 
-- ☁️ Cloud Architecture
-- ♾️ DevOps
-- 🧊 Infrastructure as Code
+- Cloud Architecture
+- DevOps
+- Infrastructure as Code
 - Kubernetes
 - GitHub Actions
 - CI/CD
