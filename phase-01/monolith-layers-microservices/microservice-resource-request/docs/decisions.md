@@ -241,3 +241,19 @@ The goal is not only to satisfy the academic challenge but also to provide a mai
 ## Rationale
 
 Architectural consistency has priority over implementing unnecessary features.
+
+---
+
+## AD-013 - Provider Compatibility Validation
+
+### Decision
+
+The Request Service does not validate the compatibility between `provider` and `resource_type`.
+
+Compatibility validation belongs exclusively to the Provision Service.
+
+### Rationale
+
+The Request Service validates only the request contract.
+
+Provider-specific knowledge belongs to the service responsible for provisioning resources.
