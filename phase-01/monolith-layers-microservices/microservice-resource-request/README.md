@@ -1,18 +1,50 @@
-# DevOps Cloud Architecture
+# Resource Provisioning System
 
-This repository contains technical projects developed throughout my Cloud & DevOps Architecture specialization and personal studies.
+A proof-of-concept demonstrating an asynchronous microservices architecture using FastAPI and RabbitMQ.
 
-The focus is on designing, documenting and implementing practical solutions using modern cloud engineering practices.
+## Objective
 
-## Topics
+Receive infrastructure provisioning requests asynchronously.
 
-- Cloud Architecture
-- DevOps
-- Infrastructure as Code
-- Kubernetes
-- GitHub Actions
-- CI/CD
-- Microsoft Azure
-- Automation
+## Architecture
 
-> This repository evolves continuously as new projects and technologies are explored.
+Request Service
+
+↓
+
+RabbitMQ
+
+↓
+
+Provision Service
+
+↓
+
+RabbitMQ
+
+↓
+
+Notification Service
+
+## Stack
+
+- FastAPI
+- RabbitMQ
+- SQLite
+- Docker Compose
+
+## Project Structure
+
+service-request
+
+service-provision
+
+service-notification
+
+docs
+
+common
+
+## Running
+
+docker compose up --build
