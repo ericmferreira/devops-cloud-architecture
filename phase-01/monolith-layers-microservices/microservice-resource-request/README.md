@@ -1,17 +1,18 @@
-# Resource Provisioning System
+# DevOps Cloud Architecture
 
-Projeto desenvolvido para demonstrar uma arquitetura baseada em microsserviços utilizando comunicação assíncrona através do RabbitMQ.
+This repository contains technical projects developed throughout my Cloud & DevOps Architecture specialization and personal studies.
 
-## Arquitetura
+The focus is on designing, documenting and implementing practical solutions using modern cloud engineering practices.
 
-- Request Service
-- Provision Service
-- Notification Service
+## Topics
 
-## Stack
+- Cloud Architecture
+- DevOps
+- Infrastructure as Code
+- Kubernetes
+- GitHub Actions
+- CI/CD
+- Microsoft Azure
+- Automation
 
-- Python
-- FastAPI
-- RabbitMQ
-- Docker
-- Docker Compose
+> This repository evolves continuously as new projects and technologies are explored.
