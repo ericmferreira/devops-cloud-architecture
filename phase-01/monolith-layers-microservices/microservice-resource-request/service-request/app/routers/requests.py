@@ -1,8 +1,10 @@
 from fastapi import APIRouter, status
 
 from app.schemas.resource_request import ResourceRequest
+from app.services.request_service import RequestService
 
 router = APIRouter()
+request_service = RequestService()
 
 @router.get(
     "/requests/{id}",
@@ -20,7 +22,4 @@ def get_request(id: int):
     summary="Create a new provisioning request"
 )
 def create_request(request: ResourceRequest):
-    return {
-        "status": "accepted",
-        "message": "Request accepted for asynchronous processing."
-    }
+    return request_service.create_request(request)
