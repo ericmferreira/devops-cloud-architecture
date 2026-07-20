@@ -28,3 +28,13 @@ services:
 
     depends_on:
       - rabbitmq
+
+  service-notification:
+    container_name: service-notification
+    
+    build:
+      context: ./service-notification
+      
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
