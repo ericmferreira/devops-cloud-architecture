@@ -34,6 +34,9 @@ class Publisher:
             exchange="",
             routing_key="resource_requests",
             body=message,
+            properties=pika.BasicProperties(
+                delivery_mode=pika.DeliveryMode.Persistent,
+            ),
         )
 
         connection.close()
