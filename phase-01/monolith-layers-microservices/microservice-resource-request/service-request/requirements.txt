@@ -1,2 +1,4 @@
 fastapi==0.139.0
 uvicorn[standard]==0.51.0
+sqlalchemy==2.0.51
+load_dotenv==0.1.0
