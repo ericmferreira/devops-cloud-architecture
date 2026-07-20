@@ -29,7 +29,8 @@ class Publisher:
         channel = connection.channel()
 
         channel.queue_declare(queue="resource_requests", durable=True)
-
+        print("Publishing message...", flush=True)
+        print(message, flush=True)
         channel.basic_publish(
             exchange="",
             routing_key="resource_requests",
@@ -38,5 +39,6 @@ class Publisher:
                 delivery_mode=pika.DeliveryMode.Persistent,
             ),
         )
+        print("Message published.", flush=True)
 
         connection.close()
