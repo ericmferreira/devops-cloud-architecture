@@ -1,15 +1,18 @@
 import json
-
 import pika
+import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Publisher:
 
     def __init__(self):
         credentials = pika.PlainCredentials("admin", "admin")
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host="rabbitmq",
-                        port=5672,
+            pika.ConnectionParameters(host=os.getenv("RABBITMQ_HOST"),
+                        port=int(os.getenv("RABBITMQ_PORT")),
                         credentials=credentials,)
         )
 

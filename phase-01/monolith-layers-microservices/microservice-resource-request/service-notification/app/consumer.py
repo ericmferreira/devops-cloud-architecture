@@ -1,10 +1,14 @@
 import time
 import json
 import pika
+import os
+from dotenv import load_dotenv
 
 from pika.exceptions import AMQPConnectionError
 
 from app.services.notification_service import NotificationService
+
+load_dotenv()
 
 class Consumer:
 
@@ -17,8 +21,8 @@ class Consumer:
             try:
                 connection = pika.BlockingConnection(
                     pika.ConnectionParameters(
-                        host="rabbitmq",
-                        port=5672,
+                        host=os.getenv("RABBITMQ_HOST"),
+                        port=int(os.getenv("RABBITMQ_PORT")),
                         credentials=credentials,
                     )
                 )

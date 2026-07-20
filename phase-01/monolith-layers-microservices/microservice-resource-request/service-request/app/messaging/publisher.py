@@ -1,6 +1,10 @@
 from email.mime import message
 import json
 import pika
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from app.models.request import Request
 
@@ -23,7 +27,7 @@ class Publisher:
 
         credentials = pika.PlainCredentials("admin", "admin")
         connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host="localhost", port=5672, credentials=credentials)
+            pika.ConnectionParameters(host=os.getenv("RABBITMQ_HOST"), port=int(os.getenv("RABBITMQ_PORT")), credentials=credentials)
         )
 
         channel = connection.channel()

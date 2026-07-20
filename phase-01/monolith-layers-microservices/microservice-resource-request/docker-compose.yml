@@ -3,6 +3,9 @@ services:
   rabbitmq:
     image: rabbitmq:4-management
 
+    env_file:
+      - ./service-request/.env
+
     restart: unless-stopped
 
     ports:
@@ -20,11 +23,26 @@ services:
       retries: 10
       start_period: 10s
 
+  service-request:
+    container_name: service-request
+    build:
+      context: ./service-request
+    env_file:
+      - ./service-request/.env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
   service-provision:
     container_name: service-provision      
     
     build:
       context: ./service-provision
+    
+    env_file:
+      - ./service-provision/.env  
 
     depends_on:
       - rabbitmq
@@ -34,7 +52,10 @@ services:
     
     build:
       context: ./service-notification
-      
+    
+    env_file:
+      - ./service-notification/.env
+
     depends_on:
       rabbitmq:
         condition: service_healthy
