@@ -1,7 +1,10 @@
 import time
+import json
 
 import pika
 from pika.exceptions import AMQPConnectionError
+
+from app.services.provision_service import ProvisionService
 
 
 class Consumer:
@@ -52,6 +55,9 @@ class Consumer:
 
     def callback(self, ch, method, properties, body):
 
-        print(body.decode(), flush=True)
+        payload = json.loads(body)
+
+        service = ProvisionService()
+        service.process(payload)
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
