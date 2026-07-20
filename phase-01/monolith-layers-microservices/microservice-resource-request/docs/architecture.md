@@ -4,9 +4,11 @@
 
 The Resource Provisioning System is an asynchronous, event-driven platform designed to process cloud resource provisioning requests.
 
+Its primary goal is to decouple request reception from resource provisioning through asynchronous messaging, allowing services to evolve independently while reducing coupling between business capabilities.
+
 The architecture is composed of independent microservices that communicate exclusively through RabbitMQ.
 
-Each microservice owns its own database and is responsible for a single business capability.
+Although the current implementation simulates resource provisioning, the architecture is provider-agnostic and can be extended to support multiple cloud providers without changing the Request Service.
 
 ---
 
@@ -14,10 +16,11 @@ Each microservice owns its own database and is responsible for a single business
 
 * Asynchronous communication.
 * Event-driven workflow.
+* Stateless service design.
 * One database per microservice.
 * Provider-agnostic Request Service.
 * Independent service ownership.
-* Docker-first deployment.
+* Container-first deployment.
 
 ---
 
@@ -65,11 +68,12 @@ Responsibilities:
 
 * Receive provisioning requests.
 * Validate payload structure.
-* Persist accepted requests.
 * Publish RequestCreated events.
 * Return HTTP responses.
 
 The Request Service does **not** perform provider-specific validation.
+
+Provider-specific rules belong exclusively to the Provision Service.
 
 ---
 
@@ -88,11 +92,10 @@ C{"Payload valid?"}
 
 D["Return HTTP Error"]
 
-E["Persist request"]
 
-F["Publish RequestCreated"]
+E["Publish RequestCreated"]
 
-G["Return HTTP 202 Accepted"]
+F["Return HTTP 202 Accepted"]
 
 A --> B
 B --> C
@@ -103,8 +106,6 @@ C -->|Yes| E
 E --> F
 F --> G
 ```
-
-If the request cannot be accepted, no event is published and no request is persisted.
 
 Typical synchronous responses include:
 
@@ -187,8 +188,6 @@ Request-->>Client: HTTP Error
 
 else Accepted
 
-Request->>Request: Persist request
-
 Request->>RabbitMQ: Publish RequestCreated
 
 Request-->>Client: HTTP 202 Accepted
@@ -203,7 +202,7 @@ Provision->>RabbitMQ: ProvisionCompleted
 
 RabbitMQ->>Notification: ProvisionCompleted
 
-Notification->>Notification: Persist notification
+Notification->>Notification: Register notification
 
 else Provision failed
 
@@ -211,7 +210,7 @@ Provision->>RabbitMQ: ProvisionFailed
 
 RabbitMQ->>Notification: ProvisionFailed
 
-Notification->>Notification: Persist notification
+Notification->>Notification: Register notification
 
 end
 
@@ -232,19 +231,31 @@ end
 
 # Data Ownership
 
-Each microservice owns its own persistence layer.
+The architecture follows the Database per Service pattern.
 
-```mermaid
-flowchart LR
+Each microservice is designed to own its own persistence layer, ensuring service autonomy and preventing direct database sharing.
 
-Request["Request Service"] --> RequestsDB[("requests.db")]
+The current implementation focuses on asynchronous communication. Dedicated persistence will be introduced as the project evolves.
 
-Provision["Provision Service"] --> ProvisionDB[("provision.db")]
+---
 
-Notification["Notification Service"] --> NotificationDB[("notification.db")]
-```
+# Design Decisions
 
-No service is allowed to access another service's database.
+## Why RabbitMQ?
+
+RabbitMQ provides asynchronous communication between services, allowing each microservice to process messages independently and reducing temporal coupling.
+
+## Why a provider-agnostic Request Service?
+
+The Request Service validates only the request contract. Provider-specific validation belongs to the Provision Service, allowing support for multiple cloud providers without changing the public API.
+
+## Why one database per service?
+
+Each service owns its data model, preventing tight coupling and enabling independent evolution.
+
+## Why asynchronous processing?
+
+Provisioning cloud resources may involve long-running operations. Returning HTTP 202 allows the client to continue without waiting for the provisioning workflow to complete.
 
 ---
 
