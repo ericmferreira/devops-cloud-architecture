@@ -21,7 +21,8 @@ class RequestService:
                 configuration=request.configuration,
                 location=request.location,
                 project_id=request.project_id,
-                end_date=date.today() + timedelta(days=90)  # Default end date is 90 days from today
+                end_date=date.today() + timedelta(days=90),  # Default end date is 90 days from today
+                status="PENDING"
             )
             saved_request = repository.save(new_request)
             return {
@@ -29,3 +30,8 @@ class RequestService:
                 "status": "accepted",
                 "message": "Request accepted for asynchronous processing."
             }
+    def get_request(self, request_id: int):
+        with SessionLocal() as session:
+            repository = RequestRepository(session)
+
+            return repository.get_by_id(request_id)

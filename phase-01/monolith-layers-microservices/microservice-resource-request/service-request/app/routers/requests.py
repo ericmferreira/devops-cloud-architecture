@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status
 
 from app.schemas.resource_request import ResourceRequest
+from app.schemas.resource_response import ResourceResponse
 from app.services.request_service import RequestService
 
 router = APIRouter()
@@ -8,13 +9,13 @@ request_service = RequestService()
 
 @router.get(
     "/requests/{id}",
+    response_model=ResourceResponse,
     summary="Retrieve a provisioning request"
 )
 def get_request(id: int):
-    return {
-            "id": id, 
-            "message": "Request retrieved successfully."
-            }
+    request = request_service.get_request(id)
+
+    return ResourceResponse.model_validate(request)
 
 @router.post(
     "/requests",

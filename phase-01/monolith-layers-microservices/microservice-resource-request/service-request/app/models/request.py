@@ -17,3 +17,4 @@ class Request(Base):
     location: Mapped[str] = mapped_column(String(100))
     project_id: Mapped[str] = mapped_column(String(100))
     end_date: Mapped[date] = mapped_column(Date)
+    status: Mapped[str] = mapped_column(String(20), default="PENDING")
