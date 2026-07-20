@@ -2,14 +2,15 @@ from app.schemas.resource_request import ResourceRequest
 from app.repositories.request_repository import RequestRepository
 from app.models.request import Request
 from app.database import SessionLocal
+from app.messaging.publisher import Publisher
 
 from datetime import date, timedelta
 
 
 class RequestService:
 
-    # def __init__(self):
-    #     self.repository = RequestRepository()
+    def __init__(self):
+        self.publisher = Publisher()
 
     def create_request(self, request: ResourceRequest):
         with SessionLocal() as session:
@@ -25,11 +26,16 @@ class RequestService:
                 status="PENDING"
             )
             saved_request = repository.save(new_request)
+
+            self.publisher.publish(saved_request)
+            
             return {
                 "id": saved_request.id,
                 "status": "accepted",
                 "message": "Request accepted for asynchronous processing."
             }
+
+
     def get_request(self, request_id: int):
         with SessionLocal() as session:
             repository = RequestRepository(session)
