@@ -25,13 +25,17 @@ services:
 
   service-request:
     container_name: service-request
+
     build:
       context: ./service-request
+
     env_file:
       - ./service-request/.env
+
     depends_on:
       rabbitmq:
         condition: service_healthy
+        
     ports:
       - "8000:8000"
 

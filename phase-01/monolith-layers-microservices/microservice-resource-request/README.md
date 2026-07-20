@@ -1,16 +1,22 @@
 # Cloud Resource Provisioning Platform
 
-Projeto desenvolvido como parte da pós-graduação em DevOps & Cloud Architecture (FIAP).
+![Python](https://img.shields.io/badge/Python-3.13-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)
+![RabbitMQ](https://img.shields.io/badge/RabbitMQ-Message_Broker-orange)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-O objetivo é demonstrar uma arquitetura baseada em microsserviços para processamento assíncrono de solicitações de provisionamento de recursos em provedores de nuvem.
+Project developed as part of the **FIAP DevOps & Cloud Architecture** postgraduate program.
 
-> O projeto possui caráter educacional e não realiza provisionamento real de recursos. O foco está na arquitetura, comunicação entre serviços e desacoplamento utilizando mensageria.
+The goal of this project is to demonstrate an event-driven microservices architecture for asynchronous cloud resource provisioning requests.
+
+> This project is intended for educational purposes only. It does not provision real cloud resources. Its primary focus is on software architecture, asynchronous communication, and service decoupling through message-based workflows.
 
 ---
 
-# Arquitetura
+# Architecture
 
-O fluxo da aplicação é composto por três microsserviços e um broker RabbitMQ.
+The application consists of three independent microservices communicating exclusively through a RabbitMQ message broker.
 
 ```
                   HTTP Request
@@ -31,18 +37,18 @@ O fluxo da aplicação é composto por três microsserviços e um broker RabbitM
           service-notification
 ```
 
-Cada serviço possui responsabilidade única.
+Each service is responsible for a single business capability.
 
-| Serviço | Responsabilidade |
-|----------|------------------|
-| service-request | Recebe requisições HTTP, valida o payload e publica a mensagem na fila |
-| service-provision | Consome mensagens da fila e simula o provisionamento |
-| service-notification | Consome o resultado do provisionamento e registra a notificação |
-| RabbitMQ | Broker responsável pela comunicação assíncrona |
+| Service | Responsibility |
+|---------|----------------|
+| **service-request** | Receives HTTP requests, validates the payload and publishes events to RabbitMQ. |
+| **service-provision** | Consumes provisioning requests and simulates resource provisioning. |
+| **service-notification** | Consumes provisioning results and registers notifications. |
+| **RabbitMQ** | Message broker responsible for asynchronous communication. |
 
 ---
 
-# Tecnologias
+# Technologies
 
 - Python 3.13
 - FastAPI
@@ -54,7 +60,7 @@ Cada serviço possui responsabilidade única.
 
 ---
 
-# Estrutura do projeto
+# Project Structure
 
 ```
 .
@@ -79,32 +85,32 @@ Cada serviço possui responsabilidade única.
 
 ---
 
-# Fluxo
+# Request Flow
 
-1. O cliente envia uma requisição HTTP.
+1. The client submits an HTTP request.
 
-2. O **service-request**
+2. **service-request**
 
-- valida o payload;
-- gera um identificador;
-- publica a mensagem no RabbitMQ.
+- validates the request payload;
+- generates a request identifier;
+- publishes a `RequestCreated` event to RabbitMQ.
 
-3. O **service-provision**
+3. **service-provision**
 
-- consome a mensagem;
-- simula o provisionamento;
-- publica o resultado em outra fila.
+- consumes the request event;
+- simulates the provisioning process;
+- publishes the provisioning result.
 
-4. O **service-notification**
+4. **service-notification**
 
-- consome o resultado;
-- registra a notificação.
+- consumes the provisioning result;
+- registers the notification.
 
-Todo o processamento ocorre de forma assíncrona.
+The entire provisioning workflow is processed asynchronously.
 
 ---
 
-# Exemplo de requisição
+# Example Request
 
 ```json
 {
@@ -120,7 +126,7 @@ Todo o processamento ocorre de forma assíncrona.
 }
 ```
 
-Resposta:
+Response:
 
 ```http
 HTTP/1.1 202 Accepted
@@ -128,11 +134,36 @@ HTTP/1.1 202 Accepted
 
 ---
 
-# Variáveis de ambiente
+# Current Scope
 
-Cada microsserviço possui seu próprio arquivo `.env`.
+This project currently focuses on demonstrating an event-driven microservices architecture.
 
-Exemplo:
+The implementation includes:
+
+- HTTP API using FastAPI
+- Asynchronous communication through RabbitMQ
+- Service decoupling
+- Containerized deployment with Docker Compose
+- Architecture documentation
+
+Persistent storage is intentionally out of scope for the current phase. The objective is to demonstrate asynchronous communication patterns rather than implementing a complete provisioning platform.
+
+Future iterations may include:
+
+- Dedicated database per microservice
+- Request tracking
+- Notification history
+- Automated tests
+- CI/CD pipeline
+- Cloud provider integrations
+
+---
+
+# Environment Variables
+
+Each microservice contains its own `.env` file.
+
+Example:
 
 ```
 RABBITMQ_HOST=rabbitmq
@@ -143,16 +174,22 @@ RABBITMQ_PASSWORD=guest
 
 ---
 
-# Executando
+# Running the Project
 
 ```bash
 docker compose up --build
 ```
 
-Swagger:
+Once the containers are running, the FastAPI Swagger UI is available at:
 
 ```
 http://localhost:8000/docs
 ```
 
 ---
+
+# Documentation
+
+Additional architectural documentation is available in:
+
+- `ARCHITECTURE.md`
